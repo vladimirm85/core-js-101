@@ -47,9 +47,7 @@ const getCicleCircumference = (radius) => 2 * Math.PI * radius;
  *  10, 0  => 5
  *  -3, 3  => 0
  */
-
-// eslint-disable-next-line no-undef
-const getAverage = (value1, value2) => (BigInt(value1) + BigInt(value2)) / BigInt(2);
+const getAverage = (value1, value2) => (value1 / 2) + (value2 / 2);
 
 /**
  * Returns a distance beetween two points by cartesian coordinates.
@@ -66,8 +64,9 @@ const getAverage = (value1, value2) => (BigInt(value1) + BigInt(value2)) / BigIn
  *   (0,0) (1,0)    => 1
  *   (-5,0) (10,-10) => 18.027756377319946
  */
-// eslint-disable-next-line max-len
-const getDistanceBetweenPoints = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+const getDistanceBetweenPoints = (x1, y1, x2, y2) => Math.sqrt(
+  (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1),
+);
 
 /**
  * Returns a root of linear equation a*x + b = 0 given by coefficients a and b.
