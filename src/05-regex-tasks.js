@@ -31,9 +31,7 @@
  *
  * @return {RegExp}
  */
-function getRegexForGuid() {
-  throw new Error('Not implemented');
-}
+const getRegexForGuid = () => /^{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}$/i;
 
 
 /**
@@ -53,9 +51,7 @@ function getRegexForGuid() {
  * @return {RegExp}
  *
  */
-function getRegexForPitSpot() {
-  throw new Error('Not implemented');
-}
+const getRegexForPitSpot = () => /^(pi|s|r)/i;
 
 
 /**
@@ -68,7 +64,7 @@ function getRegexForPitSpot() {
  *  - Valid passwords will only be alphanumeric characters (+ underscore).
  *
  * @param {number} minLength
- * @return {Regex}
+ * @return {RegExp}
  *
  * @example
  *   let validator = getPasswordValidator(6);
@@ -78,9 +74,7 @@ function getRegexForPitSpot() {
  *   'PASSW0RD'.match(validator)  => false
  *   'Pa55'.match(validator) => false
  */
-function getPasswordValidator(/* minLength */) {
-  throw new Error('Not implemented');
-}
+const getPasswordValidator = (minLength) => new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[^a-zA-Z0-9])(?=.{${minLength},})`);
 
 
 module.exports = {
