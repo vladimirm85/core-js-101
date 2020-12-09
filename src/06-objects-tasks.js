@@ -20,8 +20,10 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  this.width = width;
+  this.height = height;
+  this.getArea = () => this.width * this.height;
 }
 
 
@@ -35,9 +37,7 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
-}
+const getJSON = (obj) => JSON.stringify(obj);
 
 
 /**
@@ -51,9 +51,11 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
-}
+const fromJSON = (proto, json) => {
+  const obj = JSON.parse(json);
+  Object.setPrototypeOf(obj, proto);
+  return obj;
+};
 
 
 /**
@@ -110,34 +112,103 @@ function fromJSON(/* proto, json */) {
  *  For more examples see unit tests.
  */
 
+function Selector() {
+  const selectors = [];
+
+  let currentSelectorWeight = 0;
+
+  const unchainableSelecors = [0, 1, 5];
+
+  const isUnchainableInChain = (selector) => unchainableSelecors.findIndex(
+    (selectorWeight) => selectorWeight === selector.weight,
+  ) !== -1 && selectors.findIndex(
+    ({ weight }) => weight === selector.weight,
+  ) !== -1;
+
+  const checkSequence = (selector) => {
+    if (isUnchainableInChain(selector)) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+
+    if (selector.weight < currentSelectorWeight) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    currentSelectorWeight = selector.weight;
+  };
+
+  const handleSelector = (selector) => {
+    checkSequence(selector);
+    selectors.push(selector);
+  };
+
+  const getSelectorString = ({ selectorName, symbols }) => {
+    const preceedingSymbol = symbols[0] || '';
+    const subsequentSymbol = symbols[1] || '';
+    return `${preceedingSymbol}${selectorName}${subsequentSymbol}`;
+  };
+
+  const getSelectorObject = (selectorName, symbols, weight) => ({
+    selectorName,
+    symbols,
+    weight,
+  });
+
+  this.element = (tagName) => {
+    handleSelector(getSelectorObject(tagName, [], 0));
+    return this;
+  };
+
+  this.id = (id) => {
+    handleSelector(getSelectorObject(id, ['#'], 1));
+    return this;
+  };
+
+  this.class = (className) => {
+    handleSelector(getSelectorObject(className, ['.'], 2));
+    return this;
+  };
+
+  this.attr = (attributeName) => {
+    handleSelector(getSelectorObject(attributeName, ['[', ']'], 3));
+    return this;
+  };
+
+  this.pseudoClass = (className) => {
+    handleSelector(getSelectorObject(className, [':'], 4));
+    return this;
+  };
+
+  this.pseudoElement = (className) => {
+    handleSelector(getSelectorObject(className, ['::'], 5));
+    return this;
+  };
+
+  this.stringify = () => selectors.reduce((acc, selector) => acc + getSelectorString(selector), '');
+}
+
+function Combiner(selector1, combinator, selector2) {
+  this.LHselector = selector1;
+  this.combinator = combinator;
+  this.RHselector = selector2;
+
+  this.stringify = () => `${this.LHselector.stringify()} ${this.combinator} ${this.RHselector.stringify()}`;
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
-  },
+  element: (tagName) => new Selector().element(tagName),
 
-  id(/* value */) {
-    throw new Error('Not implemented');
-  },
+  id: (id) => new Selector().id(id),
 
-  class(/* value */) {
-    throw new Error('Not implemented');
-  },
+  class: (className) => new Selector().class(className),
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
-  },
+  attr: (attributeName) => new Selector().attr(attributeName),
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
-  },
+  pseudoClass: (className) => new Selector().pseudoClass(className),
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
-  },
+  pseudoElement: (className) => new Selector().pseudoElement(className),
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
-  },
+  combine: (selector1, combinator, selector2) => new Combiner(selector1, combinator, selector2),
 };
 
 
