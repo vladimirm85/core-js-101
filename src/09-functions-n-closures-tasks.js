@@ -108,15 +108,16 @@ const memoize = (func) => {
  */
 const retry = (func, attempts) => () => {
   let att = attempts;
+  let error = '';
   while (att) {
     try {
       return func();
     } catch (e) {
-      console.log(e);
+      error = e;
     }
     att -= 1;
   }
-  return undefined;
+  return error && undefined;
 };
 
 
