@@ -28,9 +28,15 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
-}
+const willYouMarryMe = (isPositiveAnswer) => new Promise(
+  (resolve, reject) => (isPositiveAnswer !== undefined
+    ? resolve(
+      isPositiveAnswer
+        ? 'Hooray!!! She said "Yes"!'
+        : 'Oh no, she said "No".',
+    )
+    : reject(new Error('Wrong parameter is passed! Ask her again.'))),
+);
 
 
 /**
@@ -48,9 +54,16 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
-}
+const processAllPromises = (array) => new Promise(
+  (resolve) => {
+    const acc = [];
+    array.forEach((promise) => {
+      promise.then((value) => acc.push(value));
+    });
+    resolve(acc);
+  },
+);
+
 
 /**
  * Return Promise object that should be resolved with value received from
@@ -71,9 +84,12 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
-}
+const getFastestPromise = (array) => new Promise(
+  (resolve, reject) => array
+    .forEach((promise) => promise
+      .then((value) => resolve(value))
+      .catch((e) => reject(e))),
+);
 
 /**
  * Return Promise object that should be resolved with value that is
@@ -92,9 +108,20 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
-}
+const chainPromises = (array, action) => new Promise(
+  (resolve) => {
+    const promiseLoop = (acc = null) => {
+      array
+        .shift()
+        .then((value) => {
+          const newAcc = acc ? action(acc, value) : value;
+          return array.length ? promiseLoop(newAcc) : resolve(newAcc);
+        })
+        .catch(() => (array.length ? promiseLoop(acc) : resolve(acc)));
+    };
+    promiseLoop();
+  },
+);
 
 module.exports = {
   willYouMarryMe,

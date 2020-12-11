@@ -207,7 +207,7 @@ const isPrime = (num) => {
  *   toNumber(new Number(42), 0) => 42
  */
 
-const toNumber = (value, def) => (Number.isNaN(Number(value)) ? def : +value);
+const toNumber = (value, def) => (Number.isNaN(+value) ? def : +value);
 
 module.exports = {
   getRectangleArea,
