@@ -126,17 +126,8 @@ const isTriangle = (a, b, c) => {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-const doRectanglesOverlap = (rect1, rect2) => {
-  const isChange = () => rect1.left > rect2.left || rect1.top > rect2.top;
-  const r1 = isChange() ? rect2 : rect1;
-  const r2 = isChange() ? rect1 : rect2;
-
-  return (r1.left <= r2.left)
-    && (r1.left + r1.height >= r2.left)
-    && (r1.top <= r2.top)
-    && (r1.top + r1.width >= r2.top);
-};
-
+const doRectanglesOverlap = (rect1, rect2) => (rect1.left + rect1.height >= rect2.left)
+  && (rect1.top + rect1.width >= rect2.top);
 
 /**
  * Returns true, if point lies inside the circle, otherwise false.
